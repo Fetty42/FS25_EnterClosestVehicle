@@ -35,8 +35,10 @@ PlayerInputComponent.registerGlobalPlayerActionEvents = Utils.appendedFunction(
                 EnterClosestVehicle.actionEventId = actionEventId
                 g_inputBinding:setActionEventTextPriority(actionEventId, GS_PRIO_VERY_LOW) -- GS_PRIO_VERY_HIGH, GS_PRIO_HIGH, GS_PRIO_LOW, GS_PRIO_VERY_LOW
                 g_inputBinding:setActionEventTextVisibility(actionEventId, true) -- INFO: change "false" to "true" to show keybinding in help window
+                dbPrintf("FS25_EnterClosestVehicle - Register key (controlling=%s, action=%s, actionId=%s)", controlling, InputAction.ENTER_CLOSEST_VEHICLE, actionEventId)
             else
-                dbPrintf("    Failed to register key for enterClosestVehicle (controlling=%s, action=%s, actionId=%s)", controlling, InputAction.ENTER_CLOSEST_VEHICLE, actionEventId)
+                -- Sometimes the registration for cotrolling=vehicle goes wrong. But I don't know why. Nevertheless, it is needed!
+                dbPrintf("FS25_EnterClosestVehicle - Failed to register key (controlling=%s, action=%s, actionId=%s)", controlling, InputAction.ENTER_CLOSEST_VEHICLE, actionEventId)
             end    
 
             -- g_inputBinding:setActionEventText(eventId, g_i18n:getText("moh_HIDE"));
