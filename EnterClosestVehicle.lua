@@ -68,7 +68,7 @@ function EnterClosestVehicle:getClosestVehicle()
 	for key, vehicle in ipairs(allVehicles) do
 		dbPrintf("  key=" .. key .. " | FullName=" .. vehicle:getFullName())
 
-		if not vehicle.isDeleted and vehicle.spec_aiVehicle ~= nil --[[and vehicle.spec_locomotive == nil]]  and vehicle ~= curVehicle and vehicle.getIsTabbable~=nil and vehicle:getIsTabbable() then
+		if not vehicle.isDeleted and vehicle.spec_aiVehicle ~= nil --[[and vehicle.spec_locomotive == nil]]  and vehicle ~= curVehicle and vehicle.getIsTabbable~=nil and vehicle:getIsTabbable() and vehicle:getOwnerFarmId() == g_currentMission:getFarmId() then
 			dbPrintf("  key=" .. key .. " | FullName=" .. vehicle:getFullName())
             if vehicle.steeringAxleNode ~= nil then
 				local x_pos_vehicle, y_pos_vehicle, z_pos_vehicle = getWorldTranslation(vehicle.steeringAxleNode)
