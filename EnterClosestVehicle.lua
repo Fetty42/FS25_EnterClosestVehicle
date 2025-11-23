@@ -1,14 +1,39 @@
 --[[
 Author: Fetty42
 Date: 08.12.2024
-Version: 1.0.0.0
+Version: 1.0.1.0
 ]]
 
-local isDbPrintfOn = false
+local dbPrintfOn = false
+local dbInfoPrintfOn = false
 
-function dbPrintf(...)
-	if isDbPrintfOn then
+local function dbInfoPrintf(...)
+	if dbInfoPrintfOn then
     	print(string.format(...))
+	end
+end
+
+local function dbPrintf(...)
+	if dbPrintfOn then
+    	print(string.format(...))
+	end
+end
+
+local function dbPrint(...)
+	if dbPrintfOn then
+    	print(...)
+	end
+end
+
+local function dbPrintHeader(funcName)
+	if dbPrintfOn then
+		if g_currentMission ~=nil and g_currentMission.missionDynamicInfo ~=nil then
+			print(string.format("Call %s: isDedicatedServer=%s | isServer()=%s | isMasterUser=%s | isMultiplayer=%s | isClient()=%s | farmId=%s", 
+							funcName, tostring(g_dedicatedServer~=nil), tostring(g_currentMission:getIsServer()), tostring(g_currentMission.isMasterUser), tostring(g_currentMission.missionDynamicInfo.isMultiplayer), tostring(g_currentMission:getIsClient()), tostring(g_currentMission:getFarmId())))
+		else
+			print(string.format("Call %s: isDedicatedServer=%s | g_currentMission=%s",
+							funcName, tostring(g_dedicatedServer~=nil), tostring(g_currentMission)))
+		end
 	end
 end
 
@@ -18,17 +43,17 @@ EnterClosestVehicle = {}
 
 
 function EnterClosestVehicle:loadMap(name)
-	dbPrintf("EnterClosestVehicle:loadMap")
+	dbPrintHeader("EnterClosestVehicle:loadMap")
 
 end
 
 function EnterClosestVehicle:registerActionEvents()
-	dbPrintf("EnterClosestVehicle:registerActionEventsPlayer")
+	dbPrintHeader("EnterClosestVehicle:registerActionEventsPlayer")
 end
 
 -- Wechsel in das am nächsten stehende Fahrzeug
 function EnterClosestVehicle:enterClosestVehicle()
-	dbPrintf("EnterClosestVehicle:enterClosestVehicle")
+	dbPrintHeader("EnterClosestVehicle:enterClosestVehicle")
 	local closestVehicle = EnterClosestVehicle:getClosestVehicle()
 	if closestVehicle ~= nil then
 		g_localPlayer:requestToEnterVehicle(closestVehicle)
@@ -37,7 +62,7 @@ end
 
 
 function EnterClosestVehicle:getClosestVehicle()
-	dbPrintf("EnterClosestVehicle:getClosestVehicle")
+	dbPrintHeader("EnterClosestVehicle:getClosestVehicle")
 
     if g_localPlayer == nil then
 		dbPrintf("  No player or controlled vehicle!")
@@ -68,7 +93,7 @@ function EnterClosestVehicle:getClosestVehicle()
 	for key, vehicle in ipairs(allVehicles) do
 		dbPrintf("  key=" .. key .. " | FullName=" .. vehicle:getFullName())
 
-		if not vehicle.isDeleted and vehicle.spec_aiVehicle ~= nil --[[and vehicle.spec_locomotive == nil]]  and vehicle ~= curVehicle and vehicle.getIsTabbable~=nil and vehicle:getIsTabbable() and vehicle:getOwnerFarmId() == g_currentMission:getFarmId() then
+		if not vehicle.isDeleted and vehicle.spec_aiVehicle ~= nil --[[and vehicle.spec_locomotive == nil]]  and not vehicle.isBroken and vehicle ~= curVehicle and vehicle.getIsTabbable~=nil and vehicle:getIsTabbable() and vehicle:getOwnerFarmId() == g_currentMission:getFarmId() then
 			dbPrintf("  key=" .. key .. " | FullName=" .. vehicle:getFullName())
             if vehicle.steeringAxleNode ~= nil then
 				local x_pos_vehicle, y_pos_vehicle, z_pos_vehicle = getWorldTranslation(vehicle.steeringAxleNode)
